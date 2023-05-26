@@ -1,0 +1,14 @@
+schematool -initSchema -dbType derby
+create table flight (fno int, year int, dest varchar(10),delay float);
+alter table flight rename to air_flight;
+alter table air_flight add columns (source varchar(10));
+create table flight (fno int, year int, dest varchar(10),delay float);
+create table nflight (fno int, year int,source varchar(10));
+select a.fno, a.year, a.dest, a.delay, b.source from flight a join nflight b on (a.fno = b.fno) ;
+select avg(delay) from flight where year = 2008;
+CREATE TABLE IF NOT EXISTS student(Student_Name STRING, Student_Rollno INT, Student_Marks FLOAT) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
+LOAD DATA LOCAL INPATH '/home/dikshant/Documents/data.csv' INTO TABLE student;
+create index flight index on table flight(fno) as 'org.apache.hadoop.hive.ql.index.compactIndexHandler' WITH DEFERRED REBUILD;
+hdfs dfs -mkdir /tb
+hdfs dfs -put flight.csv /tb
+create external table if not exists flightff(fno int, year int, dest varchar(10)) comment 'List of Flisght' row format delimited fields terminated by ',' stored as textfile location '/tb';
